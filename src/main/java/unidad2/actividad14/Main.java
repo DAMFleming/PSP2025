@@ -12,8 +12,12 @@ import javax.swing.SwingUtilities;
 
 public class Main implements WindowListener {
 
-	JTextArea text = new JTextArea();
+	private JTextArea text = new JTextArea();
 
+	public void mostrarMensaje(String mensaje) {
+		SwingUtilities.invokeLater(() -> text.append(mensaje));
+	}
+	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Main()::crearMostrarGUI);
 	}
