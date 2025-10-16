@@ -15,6 +15,7 @@ public class Banco {
 			} catch (InterruptedException e) {
 				System.out.println(Thread.currentThread().getName() + ": interrumpido en wait");
 				Thread.currentThread().interrupt();
+				return;
 			}
 		}
 		libres--;

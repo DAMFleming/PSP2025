@@ -28,7 +28,7 @@ public class Persona extends Thread {
 		
 		banco.getPlaza();
 		
-		ms = random.nextInt(601) + 100;
+		ms = random.nextInt(6010) + 100;
 		main.mostrarMensaje(getName() + ": sentado en el banco durante " + ms + " milisegundos");
 		try {
 			Thread.sleep(ms);
