@@ -2,8 +2,6 @@ package unidad2.actividad14;
 
 import java.util.Random;
 
-import javax.swing.SwingUtilities;
-
 public class Persona extends Thread {
 
 	private static Random random = new Random();
@@ -34,6 +32,7 @@ public class Persona extends Thread {
 			Thread.sleep(ms);
 		} catch (InterruptedException e) {
 		}
+		banco.liberarPlaza();
 		main.mostrarMensaje(getName() + ": se levanta del banco");
 	}
 	

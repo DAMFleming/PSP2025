@@ -17,6 +17,12 @@ public class Banco {
 			}
 		}
 		libres--;
+		notifyAll();
+	}
+	
+	public synchronized void liberarPlaza() {
+		libres++;
+		notifyAll();
 	}
 	
 }

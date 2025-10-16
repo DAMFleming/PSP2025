@@ -13,7 +13,8 @@ public class Parque {
 	}
 	
 	public void iniciarSimulación() {
-		
+		for (int i=0; i<personas.length; i++)
+			personas[i].start();
 	}
 	
 }

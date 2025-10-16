@@ -15,7 +15,7 @@ public class Main implements WindowListener {
 	private JTextArea text = new JTextArea();
 
 	public void mostrarMensaje(String mensaje) {
-		SwingUtilities.invokeLater(() -> text.append(mensaje));
+		SwingUtilities.invokeLater(() -> text.append(mensaje + "\n"));
 	}
 	
 	public static void main(String[] args) {
@@ -35,6 +35,7 @@ public class Main implements WindowListener {
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		new Parque(20, 5, this).iniciarSimulación();
 	}
 
 	@Override
