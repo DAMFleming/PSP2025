@@ -13,7 +13,8 @@ public class Banco {
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				System.out.println(Thread.currentThread().getName() + ": interrumpido en wait");
+				Thread.currentThread().interrupt();
 			}
 		}
 		libres--;

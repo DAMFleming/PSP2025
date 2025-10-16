@@ -17,4 +17,14 @@ public class Parque {
 			personas[i].start();
 	}
 	
+	public void interrumpir() {
+		for (int i=0; i<personas.length; i++)
+			personas[i].interrupt();
+		for (int i=0; i<personas.length; i++)
+			try {
+				personas[i].join();
+			} catch (InterruptedException e) {
+			}
+	}
+	
 }

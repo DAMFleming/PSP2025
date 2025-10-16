@@ -13,6 +13,7 @@ import javax.swing.SwingUtilities;
 public class Main implements WindowListener {
 
 	private JTextArea text = new JTextArea();
+	private Parque parque;
 
 	public void mostrarMensaje(String mensaje) {
 		SwingUtilities.invokeLater(() -> text.append(mensaje + "\n"));
@@ -35,11 +36,13 @@ public class Main implements WindowListener {
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		new Parque(20, 5, this).iniciarSimulación();
+		parque = new Parque(20, 5, this);
+		parque.iniciarSimulación();
 	}
 
 	@Override
 	public void windowClosing(WindowEvent e) {
+		parque.interrumpir();
 		System.exit(0);
 	}
 

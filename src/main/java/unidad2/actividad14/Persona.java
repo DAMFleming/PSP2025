@@ -22,6 +22,8 @@ public class Persona extends Thread {
 		try {
 			Thread.sleep(ms);
 		} catch (InterruptedException e) {
+			System.out.println(Thread.currentThread().getName() + ": interrumpido paseando");
+			return;
 		}
 		
 		banco.getPlaza();
@@ -31,6 +33,8 @@ public class Persona extends Thread {
 		try {
 			Thread.sleep(ms);
 		} catch (InterruptedException e) {
+			System.out.println(Thread.currentThread().getName() + ": interrumpido sentado");
+			return;
 		}
 		banco.liberarPlaza();
 		main.mostrarMensaje(getName() + ": se levanta del banco");
