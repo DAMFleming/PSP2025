@@ -1,5 +1,6 @@
 package unidad2.actividad14.locks;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -13,8 +14,15 @@ public class Banco {
 		libres = plazas;
 	}
 	
-	public void getPlaza() {
-		lock.lock();
+	public boolean getPlaza() {
+		try {
+			if (!lock.tryLock(500, TimeUnit.MILLISECONDS))
+				return false;
+		} catch (InterruptedException e) {
+			System.out.println(Thread.currentThread().getName() + ": interrumpido en wait");
+			Thread.currentThread().interrupt();
+			return false;
+		}
 		try {
 			while (libres == 0) {
 				try {
@@ -22,10 +30,11 @@ public class Banco {
 				} catch (InterruptedException e) {
 					System.out.println(Thread.currentThread().getName() + ": interrumpido en wait");
 					Thread.currentThread().interrupt();
-					return;
+					return false;
 				}
 			}
 			libres--;
+			return true;
 		} finally {
 			lock.unlock();
 		}
