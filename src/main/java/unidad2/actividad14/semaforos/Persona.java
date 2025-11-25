@@ -1,27 +1,26 @@
-package unidad2.actividad14.locks;
+package unidad2.actividad14.semaforos;
 
 import java.util.Random;
 
-public class Persona {
+public class Persona extends Thread {
 
 	private static Random random = new Random();
-	private String nombre;
 	
 	private Banco banco;
 	private Main main;
 	
 	public Persona(Banco banco, String nombre, Main main) {
 		this.banco = banco;
-		this.nombre = nombre;
+		setName(nombre);
 		this.main = main;
 	}
 	
-	public void tarea() {
-		Thread.currentThread().setName(nombre);
+	@Override
+	public void run() {
 		long ms = random.nextInt(2001) + 1000;
 		do {
 			
-			main.mostrarMensaje(Thread.currentThread().getName() + ": paseando " + ms + " milisegundos");
+			main.mostrarMensaje(getName() + ": paseando " + ms + " milisegundos");
 			try {
 				Thread.sleep(ms);
 			} catch (InterruptedException e) {
@@ -33,11 +32,11 @@ public class Persona {
 		} while(!banco.getPlaza() && ms>0);
 
 		if (ms == 0) {
-			main.mostrarMensaje(Thread.currentThread().getName() + ": No encontró asiento y se fué del parque.");
+			main.mostrarMensaje(getName() + ": No encontró asiento y se fué del parque.");
 		} else {
 		
 			ms = random.nextInt(6010) + 100;
-			main.mostrarMensaje(Thread.currentThread().getName() + ": sentado en el banco durante " + ms + " milisegundos");
+			main.mostrarMensaje(getName() + ": sentado en el banco durante " + ms + " milisegundos");
 			try {
 				Thread.sleep(ms);
 			} catch (InterruptedException e) {
@@ -45,7 +44,7 @@ public class Persona {
 				return;
 			}
 			banco.liberarPlaza();
-			main.mostrarMensaje(Thread.currentThread().getName() + ": se levanta del banco");
+			main.mostrarMensaje(getName() + ": se levanta del banco");
 		}
 	}
 	

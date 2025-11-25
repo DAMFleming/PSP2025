@@ -1,4 +1,4 @@
-package unidad2.actividad14.locks;
+package unidad2.actividad14.semaforos;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -42,10 +42,7 @@ public class Main implements WindowListener {
 
 	@Override
 	public void windowClosing(WindowEvent e) {
-		try {
-			parque.interrumpir();
-		} catch (InterruptedException e1) {
-		}
+		parque.interrumpir();
 		System.exit(0);
 	}
 
