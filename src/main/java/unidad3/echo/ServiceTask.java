@@ -23,10 +23,12 @@ public class ServiceTask {
 			while ((linea = in.readLine()) != null) {
 				System.out.println(socket.getRemoteSocketAddress() + ": " + linea);
 				out.println(linea);
+				out.flush();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println(socket.getRemoteSocketAddress() + ": conexión finalizada");
 	}
 	
 }
