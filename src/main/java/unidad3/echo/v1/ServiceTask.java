@@ -1,4 +1,4 @@
-package unidad3.echo;
+package unidad3.echo.v1;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,12 +18,11 @@ public class ServiceTask {
 	public void run() {
 		try (socket) {
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+			PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
 			String linea;
 			while ((linea = in.readLine()) != null) {
 				System.out.println(socket.getRemoteSocketAddress() + ": " + linea);
 				out.println(linea);
-				out.flush();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

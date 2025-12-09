@@ -1,4 +1,4 @@
-package unidad3.echo;
+package unidad3.echo.v2;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -14,6 +14,8 @@ public class Server {
 			ExecutorService service = Executors.newFixedThreadPool(20);
 			while (true) {
 				Socket socket = serverSocket.accept();
+				socket.setSoTimeout(10000);
+				System.out.println(socket.getRemoteSocketAddress() + ":" + socket.getPort() + ": conectado");
 				service.submit(new ServiceTask(socket)::run);
 			}
 		}
