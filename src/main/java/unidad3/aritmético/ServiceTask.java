@@ -18,15 +18,7 @@ public class ServiceTask {
 		try (socket) {
 			DataInputStream in = new DataInputStream(socket.getInputStream());
 			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-			while (true) {
-				try {
-					String s = in.readUTF(); 
-					System.out.println(socket.getRemoteSocketAddress() + ": " + s);
-					out.writeUTF(s);
-				} catch (EOFException e) {
-					break;
-				}
-			}
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

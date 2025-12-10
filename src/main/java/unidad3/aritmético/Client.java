@@ -18,9 +18,8 @@ public class Client {
 
 	private JFrame frame;
 	private JTextField display;
-	private double value1;
-	private double value2;
 	private int state = 0;
+	private String operator;
 	
 	private Client() {
 		frame = new JFrame("Calculadora Cliente");
@@ -30,11 +29,9 @@ public class Client {
 		display.setEditable(false);
 		c.add(display, BorderLayout.NORTH);
 		JPanel p = new JPanel(new BorderLayout());
-		p.add(new NumbersKeyboard(), BorderLayout.CENTER);
-		p.add(new ExtraKeyboard(), BorderLayout.SOUTH);
+		p.add(new MainKeyboard(), BorderLayout.CENTER);
 		c.add(p, BorderLayout.CENTER);
 		c.add(new OperatorsKeyboard(), BorderLayout.EAST);
-		
 		frame.pack();
 		frame.setLocationRelativeTo(null);
     }
@@ -42,18 +39,31 @@ public class Client {
     public void show() {
         frame.setVisible(true);
     }
+    
+    public void reset() {
+    	state = 0;
+		operator = null;
+		display.setText("");
+    }
 
     public static void main(final String[] args) {
         SwingUtilities.invokeLater(() -> new Client().show());
     }
     
-    private class NumbersKeyboard extends JPanel {
+    private void sendRequest() {
+    	String [] operands = display.getText().split("[\\+\\−×÷]");
+    	double leftOperand = Double.parseDouble(operands[0]);
+    	double rightOperand = Double.parseDouble(operands[1]);
+    	System.out.println(leftOperand + operator + rightOperand);
+    }
+    
+    private class MainKeyboard extends JPanel {
     	private static final long serialVersionUID = 1L;
-    	private List<NumberKey> keys = new ArrayList<>(9);
-		public NumbersKeyboard() {
-    		setLayout(new GridLayout(3, 3));
+    	private List<Key> keys = new ArrayList<>(9);
+		public MainKeyboard() {
+    		setLayout(new GridLayout(4, 3));
     		setBorder(BorderFactory.createCompoundBorder(
-    				BorderFactory.createEmptyBorder(10, 10, 0, 10),
+    				BorderFactory.createEmptyBorder(10, 10, 10, 10),
     				getBorder()));
     		keys.add(new NumberKey("7"));
     		keys.add(new NumberKey("8"));
@@ -64,30 +74,6 @@ public class Client {
     		keys.add(new NumberKey("1"));
     		keys.add(new NumberKey("2"));
     		keys.add(new NumberKey("3"));
-    		keys.forEach(k -> add(k));
-    	}
-    }
-    
-    private class NumberKey extends JButton {
-    	private static final long serialVersionUID = 1L;
-		private String number;
-    	public NumberKey(String number) {
-    		super(this.number = number);
-    		addActionListener(this::listener);
-    	}
-    	private void listener(ActionEvent e) {
-    		display.setText(display.getText() + number);
-    	}
-    }
-    
-    private class ExtraKeyboard extends JPanel {
-    	private static final long serialVersionUID = 1L;
-    	private List<ExtraKey> keys = new ArrayList<>(3);
-		public ExtraKeyboard() {
-    		setLayout(new GridLayout(1, 3));
-    		setBorder(BorderFactory.createCompoundBorder(
-    				BorderFactory.createEmptyBorder(0, 10, 10, 10),
-    				getBorder()));
     		keys.add(new ExtraKey("C"));
     		keys.add(new ExtraKey("."));
     		keys.add(new ExtraKey("="));
@@ -95,43 +81,109 @@ public class Client {
     	}
     }
     
-    private class ExtraKey extends JButton {
-    	private static final long serialVersionUID = 1L;
-		private String function;
-    	public ExtraKey(String function) {
-    		super(this.function = function);
-    		addActionListener(this::listener);
-    	}
-    	private void listener(ActionEvent e) {
-
-    	}
-    }
-    
     private class OperatorsKeyboard extends JPanel {
     	private static final long serialVersionUID = 1L;
-    	private List<OperatorKey> keys = new ArrayList<>(4);
+    	private List<Key> keys = new ArrayList<>(4);
     	public OperatorsKeyboard() {
     		setLayout(new GridLayout(4, 1));
     		setBorder(BorderFactory.createCompoundBorder(
     				BorderFactory.createEmptyBorder(10, 0, 10, 10),
     				getBorder()));
-    		keys.add(new OperatorKey("/"));
-    		keys.add(new OperatorKey("x"));
-    		keys.add(new OperatorKey("-"));
+    		keys.add(new OperatorKey("÷"));
+    		keys.add(new OperatorKey("×"));
+    		keys.add(new MinusKey("-"));
     		keys.add(new OperatorKey("+"));
     		keys.forEach(k -> add(k));
     	}
     }
     
-    private class OperatorKey extends JButton {
+    private abstract class Key extends JButton {
     	private static final long serialVersionUID = 1L;
-		private String operator;
-    	public OperatorKey(String operator) {
-    		super(this.operator = operator);
+    	public Key(String text) {
+    		super(text);
     		addActionListener(this::listener);
     	}
-    	private void listener(ActionEvent e) {
-
+    	protected abstract void listener(ActionEvent e);
+    }
+    
+    private class NumberKey extends Key {
+    	private static final long serialVersionUID = 1L;
+    	public NumberKey(String text) {
+    		super(text);
+    	}
+		protected void listener(ActionEvent e) {
+    		if (state == 16)
+    			reset();
+    		else if ((state & 1) == 0)
+    			state |= 1;
+    		else if (operator != null && (state & 2) == 0) 
+    			state |= 2;
+    		display.setText(display.getText() + getText());
+    	}
+    }
+    
+    private class ExtraKey extends Key {
+    	private static final long serialVersionUID = 1L;
+		public ExtraKey(String text) {
+    		super(text);
+    	}
+    	protected void listener(ActionEvent e) {
+    		switch (getText()) {
+    		case "C":
+    			state = 0;
+    			operator = null;
+    			display.setText("");
+    			break;
+    		case ".":
+    			if ((state & 24) == 0) {
+    				state |= 8;
+    				display.setText(display.getText() + getText());
+    			}
+    			break;
+    		default:
+    			if ((state & 18) == 2) {
+    				state = 16;
+    				sendRequest();
+    			}
+    		}
+    	}
+    }
+    
+    private class MinusKey extends Key {
+    	private static final long serialVersionUID = 1L;
+    	public MinusKey(String text) {
+    		super(text);
+    	}
+    	protected void listener(ActionEvent e) {
+    		if (state == 16)
+    			reset();
+    		if ((state & 5) == 0) {
+    			state |= 4;
+    			display.setText(display.getText() + getText());
+    		}
+    		else if ((state & 6) == 0) {
+    			if (operator == null) {
+    				state &= 251;
+    				display.setText(display.getText() + (operator = getText()));
+    			}
+    			else {
+    				state |= 6;
+    				display.setText(display.getText() + getText());
+    			}
+   			}	
+    	}
+    }
+    
+    private class OperatorKey extends Key {
+    	private static final long serialVersionUID = 1L;
+		public OperatorKey(String text) {
+    		super(text);
+    	}
+    	protected void listener(ActionEvent e) {
+    		if (state != 16 && operator == null) {
+    			state &= 251;
+   				display.setText(display.getText() + (operator = getText()));
+    		}
     	}
     }
 

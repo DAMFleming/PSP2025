@@ -10,7 +10,7 @@ public class Server {
 
 	public static void main(String[] args) throws IOException {
 		try (ServerSocket serverSocket = new ServerSocket(9001)) {
-			System.out.println("Servidor ECHO escuchando en el puerto 9001");
+			System.out.println("Servidor ECHO escuchando en el puerto 9003");
 			ExecutorService service = Executors.newFixedThreadPool(20);
 			while (true) {
 				Socket socket = serverSocket.accept();
