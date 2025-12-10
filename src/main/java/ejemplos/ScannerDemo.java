@@ -17,6 +17,7 @@ public class ScannerDemo {
 		System.out.println(scanner.match().group());
 		scanner.skip("\\d*,\\d+");
 		System.out.println(scanner.match().group());
+		scanner.close();
 	}
 
 }

@@ -6,6 +6,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -16,6 +18,8 @@ import javax.swing.SwingUtilities;
 
 public class Client {
 
+	private static final Pattern p = Pattern.compile("(\\d+|\\d*\\-?\\d*\\.?\\d+)[\\+\\−×÷](\\-?\\d*\\.?\\d+)");
+	
 	private JFrame frame;
 	private JTextField display;
 	private int state = 0;
@@ -51,10 +55,14 @@ public class Client {
     }
     
     private void sendRequest() {
-    	String [] operands = display.getText().split("[\\+\\−×÷]");
-    	double leftOperand = Double.parseDouble(operands[0]);
-    	double rightOperand = Double.parseDouble(operands[1]);
-    	System.out.println(leftOperand + operator + rightOperand);
+    	Matcher m = p.matcher(display.getText());
+    	if (m.matches()) {
+    		double leftOperand = Double.parseDouble(m.group(1));
+    		double rightOperand = Double.parseDouble(m.group(2));
+    		System.out.println(leftOperand + operator + rightOperand);
+    	}
+    	else
+    		display.setText("expresión incorrecta");
     }
     
     private class MainKeyboard extends JPanel {
@@ -74,9 +82,9 @@ public class Client {
     		keys.add(new NumberKey("1"));
     		keys.add(new NumberKey("2"));
     		keys.add(new NumberKey("3"));
-    		keys.add(new ExtraKey("C"));
-    		keys.add(new ExtraKey("."));
-    		keys.add(new ExtraKey("="));
+    		keys.add(new ClearKey());
+    		keys.add(new DecimalKey());
+    		keys.add(new EqualsKey());
     		keys.forEach(k -> add(k));
     	}
     }
@@ -91,7 +99,7 @@ public class Client {
     				getBorder()));
     		keys.add(new OperatorKey("÷"));
     		keys.add(new OperatorKey("×"));
-    		keys.add(new MinusKey("-"));
+    		keys.add(new MinusKey());
     		keys.add(new OperatorKey("+"));
     		keys.forEach(k -> add(k));
     	}
@@ -122,37 +130,48 @@ public class Client {
     	}
     }
     
-    private class ExtraKey extends Key {
+    private class EqualsKey extends Key {
     	private static final long serialVersionUID = 1L;
-		public ExtraKey(String text) {
-    		super(text);
+		public EqualsKey() {
+    		super("=");
     	}
     	protected void listener(ActionEvent e) {
-    		switch (getText()) {
-    		case "C":
-    			state = 0;
-    			operator = null;
-    			display.setText("");
-    			break;
-    		case ".":
-    			if ((state & 24) == 0) {
-    				state |= 8;
-    				display.setText(display.getText() + getText());
-    			}
-    			break;
-    		default:
-    			if ((state & 18) == 2) {
-    				state = 16;
-    				sendRequest();
-    			}
+    		if ((state & 18) == 2) {
+    			state = 16;
+    			sendRequest();
     		}
+    	}
+    }
+    
+    private class DecimalKey extends Key {
+    	private static final long serialVersionUID = 1L;
+		public DecimalKey() {
+    		super(".");
+    	}
+    	protected void listener(ActionEvent e) {
+    		if ((state & 24) == 0) {
+    			state |= 8;
+    			display.setText(display.getText() + getText());
+    		}
+    	}
+    }
+    
+    private class ClearKey extends Key {
+    	private static final long serialVersionUID = 1L;
+		public ClearKey() {
+    		super("C");
+    	}
+    	protected void listener(ActionEvent e) {
+   			state = 0;
+   			operator = null;
+   			display.setText("");
     	}
     }
     
     private class MinusKey extends Key {
     	private static final long serialVersionUID = 1L;
-    	public MinusKey(String text) {
-    		super(text);
+    	public MinusKey() {
+    		super("-");
     	}
     	protected void listener(ActionEvent e) {
     		if (state == 16)
@@ -161,16 +180,15 @@ public class Client {
     			state |= 4;
     			display.setText(display.getText() + getText());
     		}
-    		else if ((state & 6) == 0) {
-    			if (operator == null) {
-    				state &= 251;
+    		else if (operator == null) {
+    			if ((state & 1) != 0) {
+    				state &= 213;
     				display.setText(display.getText() + (operator = getText()));
     			}
-    			else {
-    				state |= 6;
-    				display.setText(display.getText() + getText());
-    			}
-   			}	
+    		} else if ((state & 6) == 0) {
+    			state |= 6;
+    			display.setText(display.getText() + getText());
+    		}	
     	}
     }
     
@@ -180,11 +198,14 @@ public class Client {
     		super(text);
     	}
     	protected void listener(ActionEvent e) {
-    		if (state != 16 && operator == null) {
-    			state &= 251;
+    		if (state != 16 && operator == null && (state & 1) != 0) {
+    			state &= 213;
    				display.setText(display.getText() + (operator = getText()));
     		}
     	}
     }
+    
+    //   16  8   4   2   1
+    //	res	dec sig op2 op1
 
 }
