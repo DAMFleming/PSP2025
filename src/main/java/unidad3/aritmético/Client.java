@@ -77,41 +77,37 @@ public class Client {
     
     private class MainKeyboard extends JPanel {
     	private static final long serialVersionUID = 1L;
-    	private List<Key> keys = new ArrayList<>(9);
-		public MainKeyboard() {
+    	public MainKeyboard() {
     		setLayout(new GridLayout(4, 3));
     		setBorder(BorderFactory.createCompoundBorder(
     				BorderFactory.createEmptyBorder(10, 10, 10, 10),
     				getBorder()));
-    		keys.add(new NumberKey("7"));
-    		keys.add(new NumberKey("8"));
-    		keys.add(new NumberKey("9"));
-    		keys.add(new NumberKey("4"));
-    		keys.add(new NumberKey("5"));
-    		keys.add(new NumberKey("6"));
-    		keys.add(new NumberKey("1"));
-    		keys.add(new NumberKey("2"));
-    		keys.add(new NumberKey("3"));
-    		keys.add(new ClearKey());
-    		keys.add(new DecimalKey());
-    		keys.add(new EqualsKey());
-    		keys.forEach(k -> add(k));
+    		add(new NumberKey("7"));
+    		add(new NumberKey("8"));
+    		add(new NumberKey("9"));
+    		add(new NumberKey("4"));
+    		add(new NumberKey("5"));
+    		add(new NumberKey("6"));
+    		add(new NumberKey("1"));
+    		add(new NumberKey("2"));
+    		add(new NumberKey("3"));
+    		add(new ClearKey());
+    		add(new DecimalKey());
+    		add(new EqualsKey());
     	}
     }
     
     private class OperatorsKeyboard extends JPanel {
     	private static final long serialVersionUID = 1L;
-    	private List<Key> keys = new ArrayList<>(4);
     	public OperatorsKeyboard() {
     		setLayout(new GridLayout(4, 1));
     		setBorder(BorderFactory.createCompoundBorder(
     				BorderFactory.createEmptyBorder(10, 0, 10, 10),
     				getBorder()));
-    		keys.add(new OperatorKey("÷"));
-    		keys.add(new OperatorKey("×"));
-    		keys.add(new MinusKey());
-    		keys.add(new OperatorKey("+"));
-    		keys.forEach(k -> add(k));
+    		add(new OperatorKey("÷"));
+    		add(new OperatorKey("×"));
+    		add(new MinusKey());
+    		add(new OperatorKey("+"));
     	}
     }
     
