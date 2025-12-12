@@ -18,7 +18,10 @@ public class ServiceTask {
 		try (socket) {
 			DataInputStream in = new DataInputStream(socket.getInputStream());
 			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-			
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

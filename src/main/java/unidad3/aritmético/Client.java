@@ -4,10 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -18,8 +22,6 @@ import javax.swing.SwingUtilities;
 
 public class Client {
 
-	private static final Pattern p = Pattern.compile("(\\d+|\\d*\\-?\\d*\\.?\\d+)[\\+\\−×÷](\\-?\\d*\\.?\\d+)");
-	
 	private JFrame frame;
 	private JTextField display;
 	private boolean operator;
@@ -61,7 +63,15 @@ public class Client {
     }
     
     private void sendRequest() {
-    	System.out.println(display.getText());
+    	try (Socket socket = new Socket("localhost", 9003)) {
+    		socket.setSoTimeout(3000);
+    		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    		PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+    		display.setText(in.readLine());
+    		out.println(display.getText());
+    	} catch (IOException e) {
+    		display.setText(e.getLocalizedMessage());
+    	}
     	sent = true;
     }
     
