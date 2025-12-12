@@ -24,6 +24,8 @@ public class Client {
 	private JTextField display;
 	private int state = 0;
 	private String operator;
+	private String lOperand;
+	private String rOperand;
 	
 	private Client() {
 		frame = new JFrame("Calculadora Cliente");
@@ -149,7 +151,13 @@ public class Client {
     		super(".");
     	}
     	protected void listener(ActionEvent e) {
-    		if ((state & 24) == 0) {
+    		if (state == 16)
+    			reset();
+    		if ((state & 8) == 0) {
+    			if ((state & 1) == 0)
+    				state |= 1;
+    			else if (operator != null && (state & 2) == 0)
+    				state |= 2;
     			state |= 8;
     			display.setText(display.getText() + getText());
     		}
