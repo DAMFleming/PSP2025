@@ -22,10 +22,12 @@ public class Client {
 	
 	private JFrame frame;
 	private JTextField display;
-	private int state = 0;
-	private String operator;
-	private String lOperand;
-	private String rOperand;
+	private boolean operator;
+	private boolean leftOp;
+	private boolean rightOp;
+	private boolean minus;
+	private boolean decimal;
+	private boolean sent;
 	
 	private Client() {
 		frame = new JFrame("Calculadora Cliente");
@@ -33,6 +35,9 @@ public class Client {
 		Container c = frame.getContentPane();
 		display = new JTextField();
 		display.setEditable(false);
+		display.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createEmptyBorder(10, 10, 0, 10),
+				display.getBorder()));
 		c.add(display, BorderLayout.NORTH);
 		JPanel p = new JPanel(new BorderLayout());
 		p.add(new MainKeyboard(), BorderLayout.CENTER);
@@ -47,8 +52,7 @@ public class Client {
     }
     
     public void reset() {
-    	state = 0;
-		operator = null;
+    	leftOp = rightOp = operator = minus = decimal = sent = false;
 		display.setText("");
     }
 
@@ -57,14 +61,8 @@ public class Client {
     }
     
     private void sendRequest() {
-    	Matcher m = p.matcher(display.getText());
-    	if (m.matches()) {
-    		double leftOperand = Double.parseDouble(m.group(1));
-    		double rightOperand = Double.parseDouble(m.group(2));
-    		System.out.println(leftOperand + operator + rightOperand);
-    	}
-    	else
-    		display.setText("expresión incorrecta");
+    	System.out.println(display.getText());
+    	sent = true;
     }
     
     private class MainKeyboard extends JPanel {
@@ -122,12 +120,12 @@ public class Client {
     		super(text);
     	}
 		protected void listener(ActionEvent e) {
-    		if (state == 16)
+    		if (sent)
     			reset();
-    		else if ((state & 1) == 0)
-    			state |= 1;
-    		else if (operator != null && (state & 2) == 0) 
-    			state |= 2;
+    		else if (!leftOp)
+    			leftOp = true;
+    		else if (operator && !rightOp) 
+    			rightOp = true;
     		display.setText(display.getText() + getText());
     	}
     }
@@ -138,10 +136,8 @@ public class Client {
     		super("=");
     	}
     	protected void listener(ActionEvent e) {
-    		if ((state & 18) == 2) {
-    			state = 16;
+    		if (rightOp)
     			sendRequest();
-    		}
     	}
     }
     
@@ -151,14 +147,10 @@ public class Client {
     		super(".");
     	}
     	protected void listener(ActionEvent e) {
-    		if (state == 16)
+    		if (sent)
     			reset();
-    		if ((state & 8) == 0) {
-    			if ((state & 1) == 0)
-    				state |= 1;
-    			else if (operator != null && (state & 2) == 0)
-    				state |= 2;
-    			state |= 8;
+    		if (!decimal) {
+    			decimal = true;
     			display.setText(display.getText() + getText());
     		}
     	}
@@ -170,10 +162,8 @@ public class Client {
     		super("C");
     	}
     	protected void listener(ActionEvent e) {
-   			state = 0;
-   			operator = null;
-   			display.setText("");
-    	}
+   			reset();
+   		}
     }
     
     private class MinusKey extends Key {
@@ -182,21 +172,12 @@ public class Client {
     		super("-");
     	}
     	protected void listener(ActionEvent e) {
-    		if (state == 16)
-    			reset();
-    		if ((state & 5) == 0) {
-    			state |= 4;
+    		if ( (!leftOp && !decimal && !minus) || (operator && !rightOp && !decimal && !minus) ) {
+    			minus = true;
     			display.setText(display.getText() + getText());
     		}
-    		else if (operator == null) {
-    			if ((state & 1) != 0) {
-    				state &= 213;
-    				display.setText(display.getText() + (operator = getText()));
-    			}
-    		} else if ((state & 6) == 0) {
-    			state |= 6;
-    			display.setText(display.getText() + getText());
-    		}	
+    		else if (leftOp && !operator)
+    			setOperator(getText());
     	}
     }
     
@@ -206,14 +187,15 @@ public class Client {
     		super(text);
     	}
     	protected void listener(ActionEvent e) {
-    		if (state != 16 && operator == null && (state & 1) != 0) {
-    			state &= 213;
-   				display.setText(display.getText() + (operator = getText()));
-    		}
+    		if (leftOp && !operator)
+    			setOperator(getText());
     	}
     }
     
-    //   16  8   4   2   1
-    //	res	dec sig op2 op1
-
+    private void setOperator(String operator) {
+    	this.operator = true;
+    	minus = decimal = false;
+		display.setText(display.getText() + operator);
+    }
+    
 }
