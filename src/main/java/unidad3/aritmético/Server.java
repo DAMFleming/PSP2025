@@ -15,7 +15,6 @@ public class Server {
 			while (true) {
 				Socket socket = serverSocket.accept();
 				socket.setSoTimeout(10000);
-				System.out.println(socket.getRemoteSocketAddress() + ":" + socket.getPort() + ": conectado");
 				service.submit(new ServiceTask(socket)::run);
 			}
 		}

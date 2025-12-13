@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public class ServiceTask {
 
 	private final Socket socket;
-	private static final String numberRegex = "";
+	private static final String numberRegex = "(?:\\-?\\.\\d+)|(?:\\-?\\d+\\.\\d*)";
 	private static final String operatorRegex = "[\\+\\-×÷]";
 	private static final Pattern p = Pattern.compile(String.format("(%s)(%s)(%s)", numberRegex, operatorRegex, numberRegex));
 
@@ -24,15 +24,17 @@ public class ServiceTask {
 	
 	public void run() {
 		try (socket) {
+			System.out.println(socket.getRemoteSocketAddress() + ": conectado");
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+			PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
 			Matcher m = p.matcher(in.readLine());
 			if (m.matches()) {
 				double leftOp = Double.parseDouble(m.group(1));
 				double rightOp = Double.parseDouble(m.group(3));
+				String resultado = null;
 				switch (m.group(2)) {
 				case "+":
-					out.println(String.valueOf(leftOp + rightOp));
+					resultado = String.valueOf(leftOp + rightOp);
 					break;
 				case "-":
 					out.println(String.valueOf(leftOp - rightOp));
@@ -44,14 +46,16 @@ public class ServiceTask {
 					out.println(String.valueOf(leftOp / rightOp));
 					break;
 				}
+				System.out.println(socket.getRemoteSocketAddress() + ":" + resultado);
+				out.println(resultado);
 				
 			}
 			else
 				out.println("expresión incorrecta");
 		} catch (IOException e) {
-			System.out.println(socket.getRemoteSocketAddress() + ":" + socket.getPort() + ":" + e.getLocalizedMessage());
+			System.out.println(socket.getRemoteSocketAddress() + ":" + e.getLocalizedMessage());
 		}
-		System.out.println(socket.getRemoteSocketAddress() + ": conexión finalizada");
+		System.out.println(socket.getRemoteSocketAddress() + ":" + ": conexión finalizada");
 	}
 	
 }

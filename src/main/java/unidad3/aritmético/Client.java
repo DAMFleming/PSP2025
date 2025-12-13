@@ -65,8 +65,8 @@ public class Client {
     		socket.setSoTimeout(3000);
     		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     		PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
-    		display.setText(in.readLine());
     		out.println(display.getText());
+    		display.setText(in.readLine());
     	} catch (IOException e) {
     		display.setText(e.getLocalizedMessage());
     	}
