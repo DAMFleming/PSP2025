@@ -65,7 +65,10 @@ public class Client {
     		socket.setSoTimeout(3000);
     		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     		PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
-    		out.println(display.getText());
+    		out.println(display.getText()
+    				.replaceAll("−", "-")
+    				.replaceAll("×", "*")
+    				.replaceAll("÷", "/"));
     		display.setText(in.readLine());
     	} catch (IOException e) {
     		display.setText(e.getLocalizedMessage());
@@ -126,7 +129,7 @@ public class Client {
 		protected void listener(ActionEvent e) {
     		if (sent)
     			reset();
-    		else if (!leftOp)
+    		if (!leftOp)
     			leftOp = true;
     		else if (operator && !rightOp) 
     			rightOp = true;
@@ -173,9 +176,11 @@ public class Client {
     private class MinusKey extends Key {
     	private static final long serialVersionUID = 1L;
     	public MinusKey() {
-    		super("-");
+    		super("−");
     	}
     	protected void listener(ActionEvent e) {
+    		if (sent)
+    			reset();
     		if ( (!leftOp && !decimal && !minus) || (operator && !rightOp && !decimal && !minus) ) {
     			minus = true;
     			display.setText(display.getText() + getText());

@@ -14,7 +14,7 @@ public class ServiceTask {
 
 	private final Socket socket;
 	private static final String numberRegex = "(?:\\-?\\.\\d+)|(?:\\-?\\d+\\.?\\d*)";
-	private static final String operatorRegex = "[\\+\\-×÷]";
+	private static final String operatorRegex = "[\\+\\-\\*/]";
 	private static final Pattern p = Pattern.compile(String.format("(%s)(%s)(%s)", numberRegex, operatorRegex, numberRegex));
 
 	public ServiceTask(Socket socket) throws SocketException {
@@ -26,8 +26,8 @@ public class ServiceTask {
 		try (socket) {
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
-			System.out.println(socket.getRemoteSocketAddress() + ": conectado");
 			String expression = in.readLine();
+			System.out.println(socket.getRemoteSocketAddress() + " → " + expression);
 			Matcher m = p.matcher(expression);
 			String resultado = null;
 			if (m.matches()) {
@@ -40,10 +40,10 @@ public class ServiceTask {
 				case "-":
 					resultado = String.valueOf(leftOp - rightOp);
 					break;
-				case "×":
+				case "*":
 					resultado = String.valueOf(leftOp * rightOp);
 					break;
-				case "÷":
+				case "/":
 					resultado = String.valueOf(leftOp / rightOp);
 					break;
 				}
@@ -51,11 +51,10 @@ public class ServiceTask {
 			else
 				resultado = "expresión incorrecta";
 			out.println(resultado);
-			System.out.println(socket.getRemoteSocketAddress() + ":" + resultado);
+			System.out.println(socket.getRemoteSocketAddress() + " ← " + resultado);
 		} catch (IOException e) {
-			System.out.println(socket.getRemoteSocketAddress() + ":" + e.getLocalizedMessage());
+			System.out.println(socket.getRemoteSocketAddress() + " ← " + e.getLocalizedMessage());
 		}
-		System.out.println(socket.getRemoteSocketAddress() + ":" + ": conexión finalizada");
 	}
 	
 }
