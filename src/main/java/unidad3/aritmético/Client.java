@@ -1,7 +1,10 @@
 package unidad3.aritmético;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
@@ -18,6 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+// 012345 ÷×−,.
+
 public class Client {
 
 	private JFrame frame;
@@ -28,23 +33,39 @@ public class Client {
 	private boolean minus;
 	private boolean decimal;
 	private boolean sent;
+	private static Font displayFont;
+	private static Font buttonFont;
 	
 	private Client() {
-		frame = new JFrame("Calculadora Cliente");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		Container c = frame.getContentPane();
-		display = new JTextField();
-		display.setEditable(false);
-		display.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createEmptyBorder(10, 10, 0, 10),
-				display.getBorder()));
-		c.add(display, BorderLayout.NORTH);
-		JPanel p = new JPanel(new BorderLayout());
-		p.add(new MainKeyboard(), BorderLayout.CENTER);
-		c.add(p, BorderLayout.CENTER);
-		c.add(new OperatorsKeyboard(), BorderLayout.EAST);
-		frame.pack();
-		frame.setLocationRelativeTo(null);
+		try {
+			displayFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/TypoDigit.ttf")).deriveFont(40f);
+			buttonFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/FredokaOne.ttf")).deriveFont(30f);
+			frame = new JFrame("Calculadora Cliente");
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			Container c = frame.getContentPane();
+			JPanel panel = new JPanel();
+			panel.setBorder(BorderFactory.createEmptyBorder(10,10, 0, 10));
+			panel.add(display = new JTextField(25));
+			display.setFocusable(false);
+			display.setFont(displayFont);
+			display.setEditable(false);
+			display.setHorizontalAlignment(JTextField.RIGHT);
+			display.setBackground(Color.WHITE);
+			display.setBorder(BorderFactory.createCompoundBorder(
+					display.getBorder(),
+					BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+			c.add(panel, BorderLayout.NORTH);
+			JPanel p = new JPanel(new BorderLayout());
+			p.add(new MainKeyboard(), BorderLayout.CENTER);
+			c.add(p, BorderLayout.CENTER);
+			c.add(new OperatorsKeyboard(), BorderLayout.EAST);
+			frame.pack();
+			frame.setLocationRelativeTo(null);
+		} catch (FontFormatException | IOException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		};
+		
     }
 
     public void show() {
@@ -116,6 +137,9 @@ public class Client {
     	private static final long serialVersionUID = 1L;
     	public Key(String text) {
     		super(text);
+    		setFocusable(false);
+    		setFont(buttonFont);
+    		setForeground(Color.DARK_GRAY);
     		addActionListener(this::listener);
     	}
     	protected abstract void listener(ActionEvent e);
