@@ -38,7 +38,7 @@ public class Client {
 	
 	private Client() {
 		try {
-			displayFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/PocketCalculator.ttf")).deriveFont(40f);
+			displayFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/LEDCalculator.ttf")).deriveFont(40f);
 			buttonFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/FredokaOne.ttf")).deriveFont(30f);
 			frame = new JFrame("Calculadora Cliente");
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
