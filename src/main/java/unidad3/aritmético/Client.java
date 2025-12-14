@@ -21,7 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-// 012345 ÷×−,.
+// 012345 ÷×−,. áéíóúäñ
 
 public class Client {
 
@@ -38,7 +38,7 @@ public class Client {
 	
 	private Client() {
 		try {
-			displayFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/TypoDigit.ttf")).deriveFont(40f);
+			displayFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/PocketCalculator.ttf")).deriveFont(40f);
 			buttonFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/FredokaOne.ttf")).deriveFont(30f);
 			frame = new JFrame("Calculadora Cliente");
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -87,7 +87,6 @@ public class Client {
     		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     		PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
     		out.println(display.getText()
-    				.replaceAll("−", "-")
     				.replaceAll("×", "*")
     				.replaceAll("÷", "/"));
     		display.setText(in.readLine());
@@ -113,16 +112,16 @@ public class Client {
     		add(new NumberKey("1"));
     		add(new NumberKey("2"));
     		add(new NumberKey("3"));
-    		add(new ClearKey());
+    		add(new NumberKey("0"));
     		add(new DecimalKey());
-    		add(new EqualsKey());
+    		add(new ClearKey());
     	}
     }
     
     private class OperatorsKeyboard extends JPanel {
     	private static final long serialVersionUID = 1L;
     	public OperatorsKeyboard() {
-    		setLayout(new GridLayout(4, 1));
+    		setLayout(new GridLayout(5, 1));
     		setBorder(BorderFactory.createCompoundBorder(
     				BorderFactory.createEmptyBorder(10, 0, 10, 10),
     				getBorder()));
@@ -130,6 +129,7 @@ public class Client {
     		add(new OperatorKey("×"));
     		add(new MinusKey());
     		add(new OperatorKey("+"));
+    		add(new EqualsKey());
     	}
     }
     
@@ -200,7 +200,7 @@ public class Client {
     private class MinusKey extends Key {
     	private static final long serialVersionUID = 1L;
     	public MinusKey() {
-    		super("−");
+    		super("-");
     	}
     	protected void listener(ActionEvent e) {
     		if (sent)
