@@ -44,7 +44,7 @@ public class Client {
 	private Client() {
 		try {
 			displayFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/LEDCalculator.ttf")).deriveFont(30f);
-			buttonFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/SourceCodePro-Semibold.ttf")).deriveFont(35f);
+			buttonFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/DejaVuSansMono.ttf")).deriveFont(35f);
 			constraints.weightx = 1;
 			constraints.weighty = 1;
 			frame = new JFrame("Calculadora Cliente");
