@@ -14,7 +14,7 @@ public class ServiceTask {
 
 	private final Socket socket;
 	private static final String numberRegex = "(?:\\-?\\.\\d+)|(?:\\-?\\d+\\.?\\d*)";
-	private static final String operatorRegex = "[\\+\\-\\*/^]";
+	private static final String operatorRegex = "[\\+\\-×÷^]";
 	private static final Pattern p = Pattern.compile(String.format("(%s)(%s)(%s)", numberRegex, operatorRegex, numberRegex));
 
 	public ServiceTask(Socket socket) throws SocketException {
@@ -40,10 +40,10 @@ public class ServiceTask {
 				case "-":
 					resultado = String.valueOf(leftOp - rightOp);
 					break;
-				case "*":
+				case "×":
 					resultado = String.valueOf(leftOp * rightOp);
 					break;
-				case "/":
+				case "÷":
 					resultado = String.valueOf(leftOp / rightOp);
 					break;
 				case "^":

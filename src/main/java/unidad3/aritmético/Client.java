@@ -45,7 +45,7 @@ public class Client {
 		try {
 			displayFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/LEDCalculator.ttf")).deriveFont(30f);
 			buttonFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/SourceCodePro-Semibold.ttf")).deriveFont(35f);
-			constraints.weightx = 1;
+			constraints.weightx = .25;
 			frame = new JFrame("Calculadora Cliente");
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			Container c = frame.getContentPane();
@@ -89,10 +89,7 @@ public class Client {
     		socket.setSoTimeout(3000);
     		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     		PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
-    		out.println(display.getText()
-    				.replaceAll("×", "*")
-    				.replaceAll("÷", "/")
-    				.replaceAll("x\u02b8", "^"));
+    		out.println(display.getText());
     		display.setText(in.readLine());
     	} catch (IOException e) {
     		display.setText(e.getLocalizedMessage());
@@ -116,12 +113,12 @@ public class Client {
     		add(new NumberKey("3", 2, 2));
     		add(new NumberKey("0", 3, 0));
     		add(new DecimalKey());
-    		add(new OperatorKey("x\u02b8", 3, 2));
+    		add(new OperatorKey("x\u02b8", "^", 3, 2));
     		add(new ClearKey());
-    		add(new OperatorKey("÷", 0, 3));
-    		add(new OperatorKey("×", 1, 3));
+    		add(new OperatorKey("÷", "÷", 0, 3));
+    		add(new OperatorKey("×", "×", 1, 3));
     		add(new MinusKey());
-    		add(new OperatorKey("+", 3, 3));
+    		add(new OperatorKey("+", "+", 3, 3));
     		add(new EqualsKey());
     	}
     }
@@ -197,10 +194,23 @@ public class Client {
    		}
     }
     
-    private class MinusKey extends Key {
+    private class OperatorKey extends Key {
+    	private static final long serialVersionUID = 1L;
+    	private String symbol;
+		public OperatorKey(String text, String symbol, int row, int column) {
+    		super(text, row, column, 1, 1);
+    		this.symbol = symbol;
+    	}
+    	protected void listener(ActionEvent e) {
+    		if (leftOp && !operator)
+    			setOperator(symbol);
+    	}
+    }
+    
+    private class MinusKey extends OperatorKey {
     	private static final long serialVersionUID = 1L;
     	public MinusKey() {
-    		super("-", 2, 3, 1, 1);
+    		super("-", "-", 2, 3);
     	}
     	protected void listener(ActionEvent e) {
     		if (sent)
@@ -209,19 +219,8 @@ public class Client {
     			minus = true;
     			display.setText(display.getText() + getText());
     		}
-    		else if (leftOp && !operator)
-    			setOperator(getText());
-    	}
-    }
-    
-    private class OperatorKey extends Key {
-    	private static final long serialVersionUID = 1L;
-		public OperatorKey(String text, int row, int column) {
-    		super(text, row, column, 1, 1);
-    	}
-    	protected void listener(ActionEvent e) {
-    		if (leftOp && !operator)
-    			setOperator(getText());
+    		else 
+    			super.listener(e);
     	}
     }
     
