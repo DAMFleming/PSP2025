@@ -24,8 +24,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-// 0123 +-×÷ xʸ áéñ
-
 public class Client {
 
 	private JFrame frame;
