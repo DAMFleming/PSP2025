@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
@@ -22,6 +23,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+
+// 0123 +-×÷ xʸ áéñ
 
 public class Client {
 
@@ -41,7 +44,8 @@ public class Client {
 	private Client() {
 		try {
 			displayFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/LEDCalculator.ttf")).deriveFont(30f);
-			buttonFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/FredokaOne.ttf")).deriveFont(35f);
+			buttonFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/SourceCodePro-Semibold.ttf")).deriveFont(35f);
+			constraints.weightx = 1;
 			frame = new JFrame("Calculadora Cliente");
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			Container c = frame.getContentPane();
@@ -87,7 +91,8 @@ public class Client {
     		PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
     		out.println(display.getText()
     				.replaceAll("×", "*")
-    				.replaceAll("÷", "/"));
+    				.replaceAll("÷", "/")
+    				.replaceAll("x\u02b8", "^"));
     		display.setText(in.readLine());
     	} catch (IOException e) {
     		display.setText(e.getLocalizedMessage());
@@ -111,6 +116,7 @@ public class Client {
     		add(new NumberKey("3", 2, 2));
     		add(new NumberKey("0", 3, 0));
     		add(new DecimalKey());
+    		add(new OperatorKey("x\u02b8", 3, 2));
     		add(new ClearKey());
     		add(new OperatorKey("÷", 0, 3));
     		add(new OperatorKey("×", 1, 3));
@@ -169,7 +175,7 @@ public class Client {
     private class DecimalKey extends Key {
     	private static final long serialVersionUID = 1L;
 		public DecimalKey() {
-    		super(".", 3, 1, 2, 1);
+    		super(".", 3, 1, 1, 1);
     	}
     	protected void listener(ActionEvent e) {
     		if (sent)
