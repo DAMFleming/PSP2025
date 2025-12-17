@@ -45,7 +45,8 @@ public class Client {
 		try {
 			displayFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/LEDCalculator.ttf")).deriveFont(30f);
 			buttonFont = Font.createFont(Font.PLAIN, Client.class.getResourceAsStream("/fonts/SourceCodePro-Semibold.ttf")).deriveFont(35f);
-			constraints.weightx = .25;
+			constraints.weightx = 1;
+			constraints.weighty = 1;
 			frame = new JFrame("Calculadora Cliente");
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			Container c = frame.getContentPane();
@@ -102,24 +103,24 @@ public class Client {
     	public MainKeyboard() {
     		super(keyboardLayout);
     		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    		add(new NumberKey("7", 0, 0));
-    		add(new NumberKey("8", 0, 1));
-    		add(new NumberKey("9", 0, 2));
-    		add(new NumberKey("4", 1, 0));
-    		add(new NumberKey("5", 1, 1));
-    		add(new NumberKey("6", 1, 2));
-    		add(new NumberKey("1", 2, 0));
-    		add(new NumberKey("2", 2, 1));
-    		add(new NumberKey("3", 2, 2));
-    		add(new NumberKey("0", 3, 0));
-    		add(new DecimalKey());
-    		add(new OperatorKey("x\u02b8", "^", 3, 2));
-    		add(new ClearKey());
-    		add(new OperatorKey("÷", "÷", 0, 3));
-    		add(new OperatorKey("×", "×", 1, 3));
-    		add(new MinusKey());
-    		add(new OperatorKey("+", "+", 3, 3));
-    		add(new EqualsKey());
+    		add(new NumberKey("7", 0, 0, 1, 1));
+    		add(new NumberKey("8", 0, 1, 1, 1));
+    		add(new NumberKey("9", 0, 2, 1, 1));
+    		add(new NumberKey("4", 1, 0, 1, 1));
+    		add(new NumberKey("5", 1, 1, 1, 1));
+    		add(new NumberKey("6", 1, 2, 1, 1));
+    		add(new NumberKey("1", 2, 0, 1, 1));
+    		add(new NumberKey("2", 2, 1, 1, 1));
+    		add(new NumberKey("3", 2, 2, 1, 1));
+    		add(new NumberKey("0", 3, 0, 1, 1));
+    		add(new DecimalKey(3, 1, 1, 1));
+    		add(new ClearKey(4, 0, 2, 1));
+    		add(new OperatorKey("÷", "÷", 0, 3, 1, 1));
+    		add(new OperatorKey("×", "×", 1, 3, 1, 1));
+    		add(new MinusKey(2, 3, 1, 1));
+    		add(new OperatorKey("+", "+", 3, 3, 1, 1));
+    		add(new OperatorKey("x\u02b8", "^", 4, 3, 1, 1));
+    		add(new EqualsKey(3, 2, 1, 2));
     	}
     }
        
@@ -135,7 +136,7 @@ public class Client {
     		constraints.gridy = row;
     		constraints.gridwidth = width;
     		constraints.gridheight = height;
-    		constraints.fill = GridBagConstraints.HORIZONTAL;
+    		constraints.fill = GridBagConstraints.BOTH;
     		constraints.insets = new Insets(3, 3, 3, 3);
     		keyboardLayout.setConstraints(this, constraints);
     	}
@@ -144,8 +145,8 @@ public class Client {
     
     private class NumberKey extends Key {
     	private static final long serialVersionUID = 1L;
-    	public NumberKey(String text, int row, int column) {
-    		super(text, row, column, 1, 1);
+    	public NumberKey(String text, int row, int column, int width, int height) {
+    		super(text, row, column, width, height);
     	}
 		protected void listener(ActionEvent e) {
     		if (sent)
@@ -160,8 +161,8 @@ public class Client {
     
     private class EqualsKey extends Key {
     	private static final long serialVersionUID = 1L;
-		public EqualsKey() {
-    		super("=", 4, 2, 2, 1);
+		public EqualsKey(int row, int column, int width, int height) {
+    		super("=", row, column, width, height);
     	}
     	protected void listener(ActionEvent e) {
     		if (rightOp)
@@ -171,8 +172,8 @@ public class Client {
     
     private class DecimalKey extends Key {
     	private static final long serialVersionUID = 1L;
-		public DecimalKey() {
-    		super(".", 3, 1, 1, 1);
+		public DecimalKey(int row, int column, int width, int height) {
+    		super(".", row, column, width, height);
     	}
     	protected void listener(ActionEvent e) {
     		if (sent)
@@ -186,8 +187,8 @@ public class Client {
     
     private class ClearKey extends Key {
     	private static final long serialVersionUID = 1L;
-		public ClearKey() {
-    		super("C", 4, 0, 2, 1);
+		public ClearKey(int row, int column, int width, int height) {
+    		super("C", row, column, width, height);
     	}
     	protected void listener(ActionEvent e) {
    			reset();
@@ -197,8 +198,8 @@ public class Client {
     private class OperatorKey extends Key {
     	private static final long serialVersionUID = 1L;
     	private String symbol;
-		public OperatorKey(String text, String symbol, int row, int column) {
-    		super(text, row, column, 1, 1);
+		public OperatorKey(String text, String symbol, int row, int column, int width, int height) {
+    		super(text, row, column, width, height);
     		this.symbol = symbol;
     	}
     	protected void listener(ActionEvent e) {
@@ -209,8 +210,8 @@ public class Client {
     
     private class MinusKey extends OperatorKey {
     	private static final long serialVersionUID = 1L;
-    	public MinusKey() {
-    		super("-", "-", 2, 3);
+    	public MinusKey(int row, int column, int width, int height) {
+    		super("-", "-", row, column, width, height);
     	}
     	protected void listener(ActionEvent e) {
     		if (sent)
