@@ -113,11 +113,12 @@ public class Client {
     		add(new NumberKey("0", 3, 0, 1, 1));
     		add(new DecimalKey(3, 1, 1, 1));
     		add(new ClearKey(4, 0, 2, 1));
-    		add(new OperatorKey("÷", "÷", 0, 3, 1, 1));
-    		add(new OperatorKey("×", "×", 1, 3, 1, 1));
-    		add(new MinusKey(2, 3, 1, 1));
-    		add(new OperatorKey("+", "+", 3, 3, 1, 1));
-    		add(new OperatorKey("x\u02b8", "^", 4, 3, 1, 1));
+    		add(new OperatorKey("x\u02b8", "^", 0, 3, 1, 1));
+    		add(new OperatorKey("÷", "÷", 1, 3, 1, 1));
+    		add(new OperatorKey("×", "×", 2, 3, 1, 1));
+    		add(new MinusKey(3, 3, 1, 1));
+    		add(new OperatorKey("+", "+", 4, 3, 1, 1));
+    		
     		add(new EqualsKey(3, 2, 1, 2));
     	}
     }
