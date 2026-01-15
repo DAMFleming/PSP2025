@@ -33,23 +33,52 @@ public class ServiceTask {
 		else {
 			switch (data[0].toLowerCase()) {
 			case "buscar":
-				if (data.length == 2) {
-					System.out.println("buscando");
-				}
+				if (data.length == 2)
+					search(data[1]);
 				else
-					System.out.println("petición incorrecta");
+					error("");
 				break;
 			case "eliminar":
-				System.out.println("eliminando");
+				if (data.length == 2)
+					delete(data[1]);
+				else
+					error("");
 				break;
 			case "contactos":
-				System.out.println("contactos");
+				if (data.length == 1)
+					list();
+				else
+					error("");
 				break;
 			default:
-				System.out.println("almacenando");
+				if (data.length == 2)
+					add(data[0], data[1]);
+				else
+					error("");
+				break;
 			}
 			
 		}
+	}
+	
+	private void search(String nombre) {
+		
+	}
+	
+	private void delete(String nombre) {
+		
+	}
+	
+	private void add(String nombre, String telefono) {
+		
+	}
+	
+	private void list() {
+		
+	}
+	
+	private void error(String msg) {
+		
 	}
 	
 }
